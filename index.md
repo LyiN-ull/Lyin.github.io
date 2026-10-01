@@ -7,6 +7,6 @@ title: home_page
 
 # Home_Page
 
-!["你知道我要说什么..."](/01.jpg)
+![ ](/01.jpg)
 
 </div>
