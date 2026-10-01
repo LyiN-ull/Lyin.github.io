@@ -1,6 +1,6 @@
 ---
 layout: home
-title: ^_^
+title: home_page
 ---
 
 <div style="text-align: center;">
