@@ -1,4 +1,12 @@
 ---
 layout: home
-title: Home_Page
+title: ^_^
 ---
+
+<div style="text-align: center;">
+
+# Home_Page
+
+!["你知道我要说什么..."](/01.jpg)
+
+</div>
