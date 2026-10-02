@@ -235,7 +235,7 @@
         start = Date.now();
         var ret = Module.ccall('PyRun_SimpleString', 'number', ['string'], [
           "import zipfile\n" +
-          "zip_ref = zipfile.ZipFile('game.zip', 'r')\n" +
+          "zip_ref = zipfile.ZipFile('game.data', 'r')\n" +
           "zip_ref.extractall('.')\n" +
           "zip_ref.close()\n"
         ])
@@ -243,7 +243,7 @@
             Module.setStatus("Error extracting .zip.");
             return;
         }
-        FS.unlink('/game.zip')
+        FS.unlink('/game.data')
         Module.print("Extracted in " + (Date.now()-start)/1000.0 + "s\n");
 
         if (FS.readdir('/').indexOf('game') < 0) {
