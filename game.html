@@ -13,7 +13,7 @@
     top: 0; left: 0; right: 0;
     background: rgba(34, 34, 34, 0.7);
     padding: 15px 30px;
-    z-index: 10;
+    z-index: 100;
     backdrop-filter: blur(6px);
   }
   nav a {
@@ -36,18 +36,23 @@
     text-align: center;
   }
 
-  .hero img {
+  /* 图片层：铺满整个区域，沉到底部 */
+  .hero .bg {
     position: absolute;
     top: 0; left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    z-index: 0;
+  }
+
+  /* 文字层：浮在图片上面，比图片高一层 */
+  .hero .content {
+    position: relative;
     z-index: 1;
   }
 
   .hero h1 {
-    position: relative;
-    z-index: 2;
     color: white;
     font-size: 48px;
     font-weight: normal;
@@ -56,9 +61,8 @@
   }
 
   .hero h2 {
-    position: relative;
-    z-index: 2;
     font-weight: normal;
+    margin-top: 20px;
   }
   .hero h2 a {
     color: white;
@@ -78,14 +82,13 @@
     <a href="/Lyin.github.io/about.html">About</a>
   </nav>
 
-  <div class="hero">
-    <img src="main_menu.png" alt="反思一下为什么你会看到这句话。">
+ <div class="hero">
+  <img class="bg" src="main_menu.png" alt="诶？">
+  <div class="content">
     <h1>基于Ren'Py与班级日常制作的视觉小说</h1>
-    <br>
-    <h1><a href="https://lyin-ull.itch.io/">---Have a TRY?</a></h1>
-    <br>
-    <h2>或者看点别的（？）</h2>
+    <h2><a href="https://lyin-ull.itch.io/">---Have a TRY?</a></h2>
   </div>
+</div>
 
   
 </body>
