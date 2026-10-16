@@ -88,42 +88,33 @@
         你要改的就是这里：把目录、文件名、链接换成你自己的。
        ============================================================ */
     const fileSystem = {
-      "/": {
+      "新建文件夹1/": {
         type: "dir",
-        children: ["001", "002", "003", "004"]
+        children: ["001", "002"]
       },
-      "/001": {
+      "新建文件夹1/001/": {
+        type:"dir"'
+        children: ["null.txt"]
+      },
+      "新建文件夹1/001/null.txt": {
+        type: "file",
+        content: "这不应该是个空文件吗（不是）"
+      },
+      "新建文件夹2/": {
         type: "dir",
-        children: ["me.txt"]
+        children: ["003", "004"]
       },
-      "/about/me.txt": {
+      "新建文件夹2/003": {
         type: "file",
-        content: "你好，我是 Lyin。这里是关于我的一些信息。"
+        content: "没什么东西，你要是无聊可以去itch上面找小游戏玩。",
+        link: "itch.io"    /*  改成实际链接 */
       },
-      "/projects": {
-        type: "dir",
-        children: ["vn", "puzzles"]
-      },
-      "/projects/vn": {
+      "新建文件夹2/004": {
         type: "file",
-        content: "我的视觉小说项目。输入 open vn 可以打开。",
-        link: "/Lyin.github.io/game.html"    /* ⚠️ 改成你的实际链接 */
+        content: "uhhh......你要是点这个链接会404因为我没写好",
+        link: "/null.github.io/null.html" /*  改成实际链接 */
       },
-      "/projects/puzzles": {
-        type: "file",
-        content: "谜题合集。输入 open puzzles 可以打开。",
-        link: "/Lyin.github.io/puzzles.html" /* ⚠️ 改成你的实际链接 */
-      },
-      "/readme.txt": {
-        type: "file",
-        content: "欢迎来到我的终端。输入 help 查看所有可用命令。"
-      },
-      "/links": {
-        type: "file",
-        content: "外部链接导航。输入 open links 可以打开。",
-        link: "/Lyin.github.io/entries.html" /*  改成你的实际链接 */
-      }
-    };
+   
 
     /* ============================================================
        2. 当前路径
@@ -193,12 +184,12 @@
       help() {
         print("可用命令：");
         print("  ls              列出当前目录内容");
-        print("  cd <目录>       进入目录（cd .. 返回上级）");
+        print("  cd <目录>       进入目录，而cd .. 返回上级");
         print("  pwd             显示当前路径");
         print("  cat <文件>      查看文件内容");
         print("  open <名称>     打开文件对应的网页");
-        print("  clear           清屏");
-        print("  exit            返回博客首页");
+        print("  clear           顾名思义。");
+        print("  exit            go back to the-");
       },
 
       /* ls：列出当前目录下的内容 */
@@ -302,7 +293,7 @@
       if (commands[cmd]) {
         commands[cmd](args);
       } else {
-        print("command not found: " + cmd + "（输入 help 查看可用命令）");
+        print("command not found: " + cmd + "ps.你也许可以试下输入help(x)");
       }
     }
 
@@ -333,7 +324,7 @@
        页面加载时：更新提示符、打印欢迎语、聚焦输入框。
        ============================================================ */
     updatePrompt();
-    print("Welcome to the terminal. Type 'help' to see commands.");
+    print("Welcome to the terminal. Type 'help' to see commands.^^");
     input.focus();
   </script>
 
