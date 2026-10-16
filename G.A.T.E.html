@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>G.A.T.E</title>
+  <style>
+  
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Courier New", Consolas, monospace;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+ 
+    .image-box {
+      max-width: 600px;
+      width: 100%;
+      margin-bottom: 40px;
+    }
+    .image-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid #333;
+      border-radius: 4px;
+    }
+
+    /* ============================================================
+      
+       ============================================================ */
+    .input-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+    }
+    .input-line span {
+      white-space: nowrap;
+    }
+    .input-line input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #555;
+      outline: none;
+      color: #fff;
+      font-family: inherit;
+      font-size: 18px;
+      padding: 4px 6px;
+      width: 220px;
+    }
+    .input-line input:focus {
+      border-bottom-color: #fff;
+    }
+    /* ============================================================
+       HINT 行
+       ------------------------------------------------------------
+       整行文字是：
+         HINT: DOWNLOAD THE .PNG AND [Decode all color channels with LSB]
+       其中方括号部分默认被一块白色矩形挡住，
+       鼠标悬停在该矩形上时才显示真实内容。
+       ============================================================ */
+    .hint {
+      font-size: 15px;
+      margin-bottom: 30px;
+      color: #ccc;
+    }
+
+    /* 被遮挡的方括号部分：外层是白色矩形 */
+    .redacted {
+      display: inline-block;
+      background: #fff;          /* 白色矩形 */
+      color: #fff;               /* 文字也是白色，默认看不见 */
+      cursor: help;
+      padding: 0 4px;
+      border-radius: 2px;
+      transition: color 0.2s;
+    }
+
+    /* 鼠标悬停时：文字变黑，露出内容 */
+    .redacted:hover {
+      color: #000;
+    }
+
+    /* ============================================================
+       hints?
+       ============================================================ */
+    #message {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #888;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       图片区：把 src 换成你自己的图片文件
+       ============================================================ -->
+  <div class="image-box">
+    <img src="M82_.png" alt="真的是因为图片加载失败才看到这句话的吗？^^">
+  </div>
+
+  <!-- ============================================================
+       输入区
+       ============================================================ -->
+  <div class="input-line">
+    <span>password:</span>
+    <input id="pwd" type="password" autocomplete="off" autofocus>
+  </div>
+
+  <div id="message"></div>
+
+  <script>
+
+  <div class="hint">
+    HINT: DOWNLOAD THE .PNG AND
+    <span class="redacted">[Decode all color channels with LSB]</span>
+  </div>
+
+    /* ============================================================
+       1. 设置正确密码
+       ------------------------------------------------------------
+       把 "yourpassword" 改成你想要的密码。
+       注意：这是前端硬编码，查看源码能看到。
+       ============================================================ */
+    const CORRECT_PASSWORD = "Ad Astra Per Aspera";
+
+    /* ============================================================
+       2. 跳转目标
+       ------------------------------------------------------------
+       密码正确后跳到 terminal.html。
+       ============================================================ */
+    const REDIRECT_URL = "/Lyin.github.io/terminal.html";
+
+    /* ============================================================
+       3. 获取元素
+       ============================================================ */
+    const pwdInput = document.getElementById("pwd");
+    const message  = document.getElementById("message");
+
+    /* ============================================================
+       4. 校验函数
+       ------------------------------------------------------------
+       输入正确 → 跳转
+       输入错误 → 显示提示，清空输入框
+       ============================================================ */
+    function checkPassword() {
+      if (pwdInput.value === CORRECT_PASSWORD) {
+        message.textContent = "access granted. loading...";
+        window.location.href = REDIRECT_URL;
+      } else {
+        message.textContent = "[A]ccess [D]enied.";
+        pwdInput.value = "";
+      }
+    }
+
+    /* ============================================================
+       5. 监听回车键
+       ============================================================ */
+    pwdInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        checkPassword();
+      }
+    });
+
+    /* ============================================================
+       6. 初始化：聚焦输入框
+       ============================================================ */
+    pwdInput.focus();
+  </script>
+
+</body>
+</html>
