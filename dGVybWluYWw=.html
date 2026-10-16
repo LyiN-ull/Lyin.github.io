@@ -4,13 +4,10 @@
   <meta charset="utf-8">
   <title>dGVybWluYWw=</title>
   <style>
-    /* ============================================================
-       全局样式：重置边距，设置黑底白字的终端基础风格
-       ============================================================ */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: "Courier New", Consolas, monospace; /* 等宽字体，终端感 */
+      font-family: "Courier New", Consolas, monospace;
       background: #000;
       color: #fff;
       height: 100vh;
@@ -21,31 +18,23 @@
       line-height: 1.6;
     }
 
-    /* ============================================================
-       历史输出区：所有命令和结果都显示在这里，可滚动
-       ============================================================ */
     #output {
-      flex: 1;              /* 占满剩余空间 */
-      overflow-y: auto;     /* 内容多了可以滚动 */
-      white-space: pre-wrap;/* 保留空格和换行，长文本自动折行 */
+      flex: 1;
+      overflow-y: auto;
+      white-space: pre-wrap;
     }
 
-    /* ============================================================
-       输入行：提示符 + 输入框，固定在底部
-       ============================================================ */
     #input-line {
       display: flex;
       align-items: center;
       margin-top: 10px;
     }
 
-    /* 提示符 $ 的样式，例如 user@blog:~$ */
     #prompt {
       margin-right: 8px;
       white-space: nowrap;
     }
 
-    /* 输入框：去掉默认边框和背景，透明融入终端 */
     #cmd {
       flex: 1;
       background: transparent;
@@ -56,21 +45,14 @@
       font-size: inherit;
     }
 
-    /* 滚动条美化（可选） */
     #output::-webkit-scrollbar { width: 8px; }
     #output::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
   </style>
 </head>
 <body>
 
-  <!-- ============================================================
-       历史输出区：JS 会往这里动态插入内容
-       ============================================================ -->
   <div id="output"></div>
 
-  <!-- ============================================================
-       输入行：一个提示符 + 一个输入框
-       ============================================================ -->
   <div id="input-line">
     <span id="prompt">visitor:~$</span>
     <input id="cmd" type="text" autocomplete="off" autofocus>
@@ -80,46 +62,44 @@
     /* ============================================================
        1. 虚拟文件系统
        ------------------------------------------------------------
-       这就是访客“看到”的目录结构。
-       - type: "dir" 表示文件夹，children 是里面包含的内容
-       - type: "file" 表示文件，content 是文件内容
-       - link: 可选。如果有 link，用 open 命令打开它会跳转到这个网址
-       ------------------------------------------------------------
-        你要改的就是这里：把目录、文件名、链接换成你自己的。
+       所有键都必须以 "/" 开头，和 cwd 的格式保持一致。
+       ⚠️ 这里的目录名和 link 换成你自己的。
        ============================================================ */
     const fileSystem = {
-      "新建文件夹1/": {
+      "/": {
         type: "dir",
-        children: ["001", "002"]
+        children: ["新建文件夹1", "新建文件夹2"]
       },
-      "新建文件夹1/001/": {
-        type:"dir"'
+      "/新建文件夹1": {
+        type: "dir",
+        children: ["001"]
+      },
+      "/新建文件夹1/001": {
+        type: "dir",
         children: ["null.txt"]
       },
-      "新建文件夹1/001/null.txt": {
+      "/新建文件夹1/001/null.txt": {
         type: "file",
         content: "这不应该是个空文件吗（不是）"
       },
-      "新建文件夹2/": {
+      "/新建文件夹2": {
         type: "dir",
         children: ["003", "004"]
       },
-      "新建文件夹2/003": {
+      "/新建文件夹2/003": {
         type: "file",
         content: "没什么东西，你要是无聊可以去itch上面找小游戏玩。",
-        link: "itch.io"    /*  改成实际链接 */
+        link: "https://itch.io"
       },
-      "新建文件夹2/004": {
+      "/新建文件夹2/004": {
         type: "file",
         content: "uhhh......你要是点这个链接会404因为我没写好",
-        link: "/null.github.io/null.html" /*  改成实际链接 */
-      },
-   
+        link: "/null.github.io/null.html"
+      }
+    };
 
     /* ============================================================
        2. 当前路径
-       ------------------------------------------------------------
-       记录访客现在“在”哪个目录，初始为根目录 /。
        ============================================================ */
     let cwd = "/";
 
@@ -131,42 +111,33 @@
     const prompt = document.getElementById("prompt");
 
     /* ============================================================
-       4. 工具函数：把内容追加到输出区，并自动滚到底部
+       4. 输出到终端
        ============================================================ */
     function print(text) {
       const line = document.createElement("div");
       line.textContent = text;
       output.appendChild(line);
-      output.scrollTop = output.scrollHeight;  /* 自动滚到底 */
+      output.scrollTop = output.scrollHeight;
     }
 
     /* ============================================================
-       5. 工具函数：更新底部提示符，让它反映当前路径
-       ------------------------------------------------------------
-       例如当前在 /about 下，提示符显示 visitor@lyin:/about$
+       5. 更新提示符
        ============================================================ */
     function updatePrompt() {
       prompt.textContent = "visitor:" + cwd + "$";
     }
 
     /* ============================================================
-       6. 工具函数：解析路径
-       ------------------------------------------------------------
-       把用户输入的相对路径（比如 "me.txt" 或 "../readme.txt"）
-       转换成绝对路径（比如 "/about/me.txt"），方便查找。
+       6. 解析路径
        ============================================================ */
     function resolvePath(target) {
-      /* 没有参数时，返回当前路径 */
       if (!target) return cwd;
-
-      /* 绝对路径，直接用 */
       if (target.startsWith("/")) return target;
 
-      /* 相对路径：拼到当前路径后面，再处理 .. 和 . */
       const parts = (cwd === "/" ? [] : cwd.split("/").filter(Boolean));
       target.split("/").forEach(seg => {
-        if (seg === "" || seg === ".") return;      /* 忽略空和 . */
-        if (seg === "..") parts.pop();              /* .. 回到上一级 */
+        if (seg === "" || seg === ".") return;
+        if (seg === "..") parts.pop();
         else parts.push(seg);
       });
       return "/" + parts.join("/");
@@ -174,25 +145,20 @@
 
     /* ============================================================
        7. 命令表
-       ------------------------------------------------------------
-       每个命令对应一个函数，参数是用户输入的参数数组。
-       要加新命令，就在这里加一条。
        ============================================================ */
     const commands = {
 
-      /* help：显示所有可用命令 */
       help() {
         print("可用命令：");
         print("  ls              列出当前目录内容");
-        print("  cd <目录>       进入目录，而cd .. 返回上级");
+        print("  cd <目录>       进入目录，cd .. 返回上级");
         print("  pwd             显示当前路径");
         print("  cat <文件>      查看文件内容");
         print("  open <名称>     打开文件对应的网页");
-        print("  clear           顾名思义。");
-        print("  exit            go back to the-");
+        print("  clear           清屏");
+        print("  exit            返回博客首页");
       },
 
-      /* ls：列出当前目录下的内容 */
       ls() {
         const node = fileSystem[cwd];
         if (!node || node.type !== "dir") {
@@ -202,40 +168,27 @@
         node.children.forEach(name => {
           const childPath = (cwd === "/" ? "" : cwd) + "/" + name;
           const child = fileSystem[childPath];
-          /* 文件夹后面加 /，方便区分 */
           const suffix = child && child.type === "dir" ? "/" : "";
           print("  " + name + suffix);
         });
       },
 
-      /* cd：切换目录 */
       cd(args) {
         const target = args[0];
-        if (!target) {
-          print("cd: 缺少参数");
-          return;
-        }
+        if (!target) { print("cd: 缺少参数"); return; }
         const path = resolvePath(target);
 
-        /* 特殊：cd .. 已经在 resolvePath 里处理过了 */
-        if (!fileSystem[path]) {
-          print("cd: 没有这个目录: " + target);
-          return;
-        }
-        if (fileSystem[path].type !== "dir") {
-          print("cd: 不是目录: " + target);
-          return;
-        }
+        if (!fileSystem[path]) { print("cd: 没有这个目录: " + target); return; }
+        if (fileSystem[path].type !== "dir") { print("cd: 不是目录: " + target); return; }
+
         cwd = path === "" ? "/" : path;
-        updatePrompt();  /* 路径变了，更新提示符 */
+        updatePrompt();
       },
 
-      /* pwd：显示当前路径 */
       pwd() {
         print(cwd);
       },
 
-      /* cat：查看文件内容 */
       cat(args) {
         const target = args[0];
         if (!target) { print("cat: 缺少参数"); return; }
@@ -248,7 +201,6 @@
         print(node.content);
       },
 
-      /* open：打开文件对应的网页 */
       open(args) {
         const target = args[0];
         if (!target) { print("open: 缺少参数"); return; }
@@ -259,15 +211,13 @@
         if (!node.link) { print("open: 这个文件没有可打开的链接"); return; }
 
         print("正在打开 " + target + " ...");
-        window.location.href = node.link;  /* 跳转 */
+        window.location.href = node.link;
       },
 
-      /* clear：清屏 */
       clear() {
         output.innerHTML = "";
       },
 
-      /* exit：跳回博客首页 */
       exit() {
         print("正在离开终端 ...");
         window.location.href = "/Lyin.github.io/";
@@ -275,32 +225,27 @@
     };
 
     /* ============================================================
-       8. 主逻辑：处理用户输入的每一行命令
+       8. 处理每一行命令
        ============================================================ */
     function handleCommand(raw) {
       const line = raw.trim();
-      if (line === "") return;  /* 空行忽略 */
+      if (line === "") return;
 
-      /* 把用户输入的内容原样打印出来，模拟终端回显 */
       print(prompt.textContent + " " + line);
 
-      /* 拆成命令 + 参数，比如 "cd about" → ["cd", "about"] */
       const parts = line.split(/\s+/);
       const cmd = parts[0];
       const args = parts.slice(1);
 
-      /* 找命令并执行 */
       if (commands[cmd]) {
         commands[cmd](args);
       } else {
-        print("command not found: " + cmd + "ps.你也许可以试下输入help(x)");
+        print("command not found: " + cmd + "（输入 help 查看可用命令）");
       }
     }
 
     /* ============================================================
        9. 监听回车键
-       ------------------------------------------------------------
-       用户在输入框里按回车时，执行命令并清空输入框。
        ============================================================ */
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
@@ -310,9 +255,7 @@
     });
 
     /* ============================================================
-       10. 点击页面任意位置，让光标自动回到输入框
-       ------------------------------------------------------------
-       这样访客不用每次都用鼠标点输入框。
+       10. 点击页面任意位置，聚焦输入框
        ============================================================ */
     document.addEventListener("click", function () {
       input.focus();
@@ -320,8 +263,6 @@
 
     /* ============================================================
        11. 初始化
-       ------------------------------------------------------------
-       页面加载时：更新提示符、打印欢迎语、聚焦输入框。
        ============================================================ */
     updatePrompt();
     print("Welcome to the terminal. Type 'help' to see commands.^^");
