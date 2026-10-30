@@ -66,14 +66,14 @@
       width: 100%;
       height: auto;         /* 高度自动，保持原图比例 */
       display: block;
-      filter: blur(4px);    /* 默认虚化 */
+      filter: blur(8px);    /* 默认虚化 */
       transform: scale(1.02); /* 稍微放大一点点，防止边缘因为虚化出现白边 */
       transition: filter 0.3s ease, transform 0.3s ease;
     }
 
     /* 鼠标悬停：取消虚化，恢复原大小 */
     .gallery-item:hover img { 
-      filter: blur(0px); 
+      filter: blur(3px); 
       transform: scale(1);
     }
 
