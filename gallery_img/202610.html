@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>2026.10</title>
+  <title>Gallery 2026.10</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -11,6 +11,8 @@
       color: white;
       padding: 100px 40px 60px;
     }
+
+    /* 顶部导航栏 */
     nav {
       position: fixed; top: 0; left: 0; right: 0;
       background: rgba(34, 34, 34, 0.7);
@@ -31,55 +33,44 @@
     .back-link:hover { color: white; }
 
     /* ============================================================
-       1. 瀑布流排版（保留原图比例，自适应视窗）
+       自适应等高网格布局（完美解决长图撑爆页面问题）
        ============================================================ */
     .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 20px;
       max-width: 1200px;
       margin: 0 auto;
+      justify-content: center;
     }
 
-    /* 响应式：当屏幕变窄时，列数自动减少 */
-    @media (max-width: 900px) {
-      .gallery-grid { column-count: 2; }
-    }
-    @media (max-width: 600px) {
-      .gallery-grid { column-count: 1; }
-    }
-
-    /* 卡片样式 */
     .gallery-item {
       position: relative; 
       overflow: hidden; 
       border-radius: 8px;
       background: #222; 
       cursor: pointer; 
-      margin-bottom: 20px;  /* 图片的上下间距 */
-      break-inside: avoid;  /* 防止图片在瀑布流中被拦腰截断 */
+      height: 300px; /* 所有图片统一高度，想改大改小改这里 */
+      flex-grow: 1;  /* 自动填满剩余空间 */
     }
 
-    /* ============================================================
-       2. 小图虚化 + 原比例
-       ============================================================ */
+    /* 图片样式 */
     .gallery-item img {
-      width: 100%;
-      height: auto;         /* 高度自动，保持原图比例 */
+      height: 100%;
+      width: auto;
+      object-fit: contain; /* 保证图片完整显示，绝不裁剪 */
       display: block;
-      filter: blur(8px);    /* 默认虚化 */
-      transform: scale(1.02); /* 稍微放大一点点，防止边缘因为虚化出现白边 */
+      filter: blur(4px);   /* 默认虚化 */
       transition: filter 0.3s ease, transform 0.3s ease;
     }
 
-    /* 鼠标悬停：取消虚化，恢复原大小 */
+    /* 悬停：取消虚化 */
     .gallery-item:hover img { 
-      filter: blur(3px); 
-      transform: scale(1);
+      filter: blur(0px); 
     }
 
     /* ============================================================
-        悬停显示批注
+       悬停显示的批注文字
        ============================================================ */
     .gallery-caption {
       position: absolute; 
@@ -94,14 +85,14 @@
       transition: opacity 0.3s ease; 
       pointer-events: none;
       text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,1);
-      background: rgba(0,0,0,0.4); /* 给文字加个半透明黑底，看得更清 */
+      background: rgba(0,0,0,0.4); /* 文字半透明黑底 */
       padding: 15px;
       border-radius: 8px;
     }
     .gallery-item:hover .gallery-caption { opacity: 1; }
 
     /* ============================================================
-       4. Lightbox 大图（清晰）
+       Lightbox 全屏大图（原图无虚化）
        ============================================================ */
     .lightbox {
       display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -116,8 +107,7 @@
       object-fit: contain; 
       box-shadow: 0 0 30px rgba(0,0,0,0.8); 
       animation: zoomIn 0.3s ease;
-      /* 大图绝对不带虚化 */
-      filter: none; 
+      filter: none;
     }
     @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   </style>
@@ -136,17 +126,9 @@
 
   <div class="gallery-grid">
     
-    <!-- ============================================================
-         ⚠️ 注意路径 我真服了四个大字摆在这里我依旧写错路径
-         ============================================================ -->
-    
     <!-- 作品 1 -->
-       <!-- 作品 1 -->
-    <div class="gallery-item" data-full="../gallery_img/202610/20261001.png">
-      <!-- 新增了一个 div 用来单独控制它的大小 -->
-      <div style="max-height: 400px; overflow: hidden; display: flex; align-items: center;">
-        <img src="../gallery_img/202610/20261001.png" alt="20261001" style="width: 100%; height: 100%; object-fit: cover;">
-      </div>
+    <div class="gallery-item" data-full="/Lyin.github.io/gallery_img/202610/20261001.jpg">
+      <img src="/Lyin.github.io/gallery_img/202610/20261001.jpg" alt="20261001">
       <div class="gallery-caption">
         To the allering light<br>
         again and again reaching out...
@@ -154,49 +136,50 @@
     </div>
 
     <!-- 作品 2 -->
-    <div class="gallery-item" data-full="../gallery_img/202610/20261002.jpg">
-      <img src="../gallery_img/202610/20261002.jpg" alt="20261002">
+    <div class="gallery-item" data-full="/Lyin.github.io/gallery_img/202610/20261002.jpg">
+      <img src="/Lyin.github.io/gallery_img/202610/20261002.jpg" alt="20261002">
       <div class="gallery-caption">
         小彩蛋
       </div>
     </div>
 
     <!-- 作品 3 -->
-    <div class="gallery-item" data-full="../gallery_img/202610/20261003.jpg">
-      <img src="../gallery_img/202610/20261003.jpg" alt="20261003">
+    <div class="gallery-item" data-full="/Lyin.github.io/gallery_img/202610/20261003.jpg">
+      <img src="/Lyin.github.io/gallery_img/202610/20261003.jpg" alt="20261003">
       <div class="gallery-caption">
         for stickers of 11H8
       </div>
     </div>
 
-     <!-- 作品 4 -->
-     <div class="gallery-item" data-full="../gallery_img/202610/20261004.jpg">
-      <img src="../gallery_img/202610/20261004.jpg" alt="20261004">
+    <!-- 作品 4 -->
+    <div class="gallery-item" data-full="/Lyin.github.io/gallery_img/202610/20261004.jpg">
+      <img src="/Lyin.github.io/gallery_img/202610/20261004.jpg" alt="20261004">
       <div class="gallery-caption">
         for stickers of 11H8
       </div>
     </div>
 
     <!-- 作品 5 -->
-    <div class="gallery-item" data-full="../gallery_img/202610/20261005.jpg">
-      <img src="../gallery_img/202610/20261005.jpg" alt="20261005">
+    <div class="gallery-item" data-full="/Lyin.github.io/gallery_img/202610/20261005.jpg">
+      <img src="/Lyin.github.io/gallery_img/202610/20261005.jpg" alt="20261005">
       <div class="gallery-caption">
         for stickers of 11H8
       </div>
     </div>
 
-     <!-- 作品 6 -->
-     <div class="gallery-item" data-full="../gallery_img/202610/20261006.jpg">
-      <img src="../gallery_img/202610/20261006.jpg" alt="20261006">
+    <!-- 作品 6 -->
+    <div class="gallery-item" data-full="/Lyin.github.io/gallery_img/202610/20261006.jpg">
+      <img src="/Lyin.github.io/gallery_img/202610/20261006.jpg" alt="20261006">
       <div class="gallery-caption">
         for stickers of 11H8(来打卫吗（x）
       </div>
     </div>
     
-    <!-- 添加更多作品 -->
+    <!-- 添加更多作品按照上面格式复制即可 -->
     
   </div>
 
+  <!-- Lightbox 全屏大图容器 -->
   <div class="lightbox" id="lightbox">
     <img id="lightbox-img" src="" alt="全屏查看">
   </div>
