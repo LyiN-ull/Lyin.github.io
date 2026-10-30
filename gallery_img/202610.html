@@ -5,11 +5,16 @@
   <title>Gallery 2026.10</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
+      margin: 0;
+      padding-top: 100px;   /* 留出导航栏空间 */
+      padding-right: 20px;
+      padding-bottom: 40px;
+      padding-left: 20px;
+      background-color: #111;
       font-family: sans-serif;
-      background: #111;
       color: white;
-      padding: 100px 40px 60px;
     }
 
     /* 顶部导航栏 */
@@ -33,66 +38,66 @@
     .back-link:hover { color: white; }
 
     /* ============================================================
-       自适应等高网格布局（完美解决长图撑爆页面问题）
+       1. 核心网格排版（Grid + 马赛克）
        ============================================================ */
     .gallery-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      max-width: 1200px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-auto-rows: 200px;  /* 基础网格行高 */
+      grid-gap: 20px;
+      max-width: 1200px; 
       margin: 0 auto;
-      justify-content: center;
     }
 
     .gallery-item {
       position: relative; 
       overflow: hidden; 
-      border-radius: 8px;
-      background: #222; 
-      cursor: pointer; 
-      height: 300px; /* 所有图片统一高度，想改大改小改这里 */
-      flex-grow: 1;  /* 自动填满剩余空间 */
+      border-radius: 6px;
+      background-color: #222;
+      cursor: pointer;
     }
 
-    /* 图片样式 */
+    /* Mosaica 错落排版：第 1、4、7... 张图跨 2 行，第 2、6、10... 张图跨 1.5 行 */
+    .gallery-item:nth-child(3n+1) { grid-row: span 2; }
+    .gallery-item:nth-child(4n+2) { grid-row: span 1.5; }
+
+    /* ============================================================
+       2. 图片样式（裁剪铺满 + 重度虚化）
+       ============================================================ */
     .gallery-item img {
-      height: 100%;
-      width: auto;
-      object-fit: contain; /* 保证图片完整显示，绝不裁剪 */
-      display: block;
-      filter: blur(4px);   /* 默认虚化 */
-      transition: filter 0.3s ease, transform 0.3s ease;
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; /* 裁剪图片以填满整个格子 */
+      filter: blur(15px); /* 默认重度虚化 */
+      transform: scale(1.05); /* 防止虚化边缘出现白边 */
+      transition: filter 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s ease;
     }
 
-    /* 悬停：取消虚化 */
-    .gallery-item:hover img { 
-      filter: blur(0px); 
+    /* 悬停：取消虚化，恢复正常大小 */
+    .gallery-item:hover img {
+      filter: blur(0px);
+      transform: scale(1.0);
     }
 
-    /* ========================================================
-       悬停显示的批注文字
+    /* ============================================================
+       3. 悬停显示的批注（按照你截图里的 item-overlay 风格）
        ============================================================ */
     .gallery-caption {
       position: absolute; 
-      top: 50%; left: 50%; 
-      transform: translate(-50%, -50%);
-      width: 90%; 
-      text-align: center; 
-      color: white; 
-      font-size: 18px;
-      line-height: 1.6; 
+      bottom: 0; left: 0; right: 0;
+      padding: 20px; 
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
       opacity: 0; 
-      transition: opacity 0.3s ease; 
+      transition: opacity 0.4s; 
       pointer-events: none;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,1);
-      background: rgba(0,0,0,0.4); /* 文字半透明黑底 */
-      padding: 15px;
-      border-radius: 8px;
+      color: white; 
+      font-size: 16px;
+      line-height: 1.5;
     }
     .gallery-item:hover .gallery-caption { opacity: 1; }
 
     /* ============================================================
-       Lightbox 全屏大图（原图无虚化）
+       4. Lightbox 全屏大图（原图无虚化）
        ============================================================ */
     .lightbox {
       display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -126,7 +131,7 @@
 
   <div class="gallery-grid">
     
-    <!-- 作品 1 怎么老是这张图出问题我去你的我真服了-->
+    <!-- 作品 1 -->
     <div class="gallery-item" data-full="/Lyin.github.io/gallery_img/202610/20261001.jpg">
       <img src="/Lyin.github.io/gallery_img/202610/20261001.jpg" alt="20261001">
       <div class="gallery-caption">
@@ -174,8 +179,6 @@
         for stickers of 11H8(来打卫吗（x）
       </div>
     </div>
-    
-    <!-- 添加更多作品 -->
     
   </div>
 
