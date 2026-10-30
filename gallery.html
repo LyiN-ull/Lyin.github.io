@@ -29,6 +29,11 @@
 
     h1 { font-weight: normal; font-size: 48px; margin-bottom: 40px; }
 
+     .archive-list {
+      text-align: left;      /* 1.1 文字全部靠左对齐 */
+      display: inline-block; /* 让整个列表在页面居中，但内部文字靠左 */
+    }
+
     .archive-list a {
       display: block;
       color: #fff;
@@ -37,8 +42,11 @@
       margin: 16px 0;
       transition: color 0.2s;
     }
-    .archive-list a::before { content: "> "; color: #4ade80; }
-    .archive-list a:hover { color: #4ade80; }
+    
+    /* 1.2 删掉了 a::before 的绿色箭头，保留悬停变绿效果 */
+    .archive-list a:hover { 
+      color: #0000ff; 
+    }
   </style>
 </head>
 <body>
