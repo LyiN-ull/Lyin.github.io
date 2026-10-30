@@ -102,12 +102,18 @@
     .gallery-item:hover .gallery-caption { opacity: 1; }
 
     /* ============================================================
-       4. Lightbox 全屏大图（原图无虚化）
+       4. Lightbox 全屏大图（修复点击空白无法退出的问题）
        ============================================================ */
     .lightbox {
-      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.9); z-index: 999; justify-content: center;
-      align-items: center; cursor: zoom-out;
+      display: none; 
+      position: fixed; 
+      top: 0; left: 0; 
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.95); /* 加深一点背景 */
+      z-index: 99999; /* 把层级拉到最高，盖住所有缝隙 */
+      justify-content: center;
+      align-items: center; 
+      cursor: zoom-out;
     }
     .lightbox.active { display: flex; }
     
@@ -118,8 +124,8 @@
       box-shadow: 0 0 30px rgba(0,0,0,0.8); 
       animation: zoomIn 0.3s ease;
       filter: none;
+      cursor: default; /* 在图片上时鼠标变回普通箭头 */
     }
-    @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   </style>
 </head>
 <body>
