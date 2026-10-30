@@ -8,7 +8,7 @@
     
     body {
       margin: 0;
-      padding-top: 100px;   /* 留出导航栏空间 */
+      padding-top: 100px;
       padding-right: 20px;
       padding-bottom: 40px;
       padding-left: 20px;
@@ -80,19 +80,24 @@
     }
 
     /* ============================================================
-       3. 悬停显示的批注（按照你截图里的 item-overlay 风格）
+       3. 悬停显示的批注（居中 + 半透明小黑底）
        ============================================================ */
     .gallery-caption {
       position: absolute; 
-      bottom: 0; left: 0; right: 0;
-      padding: 20px; 
-      background: linear-gradient(transparent, rgba(0,0,0,0.8));
-      opacity: 0; 
-      transition: opacity 0.4s; 
-      pointer-events: none;
+      top: 50%; left: 50%; 
+      transform: translate(-50%, -50%);
+      width: 90%; 
+      text-align: center; 
       color: white; 
-      font-size: 16px;
-      line-height: 1.5;
+      font-size: 18px;
+      line-height: 1.6; 
+      opacity: 0; 
+      transition: opacity 0.3s ease; 
+      pointer-events: none;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,1);
+      background: rgba(0,0,0,0.6); /* 半透明小黑底 */
+      padding: 15px;
+      border-radius: 8px;
     }
     .gallery-item:hover .gallery-caption { opacity: 1; }
 
