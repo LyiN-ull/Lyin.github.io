@@ -34,8 +34,9 @@
        1. 瀑布流排版（保留原图比例，自适应视窗）
        ============================================================ */
     .gallery-grid {
-      column-count: 3;      /* 默认分 3 列 */
-      column-gap: 20px;     /* 列间距 */
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
       max-width: 1200px;
       margin: 0 auto;
     }
@@ -140,8 +141,12 @@
          ============================================================ -->
     
     <!-- 作品 1 -->
-    <div class="gallery-item" data-full="../gallery_img/202610/20261001.jpg">
-      <img src="/Lyin.github.io/gallery_img/202610/20261001.png" alt="20261001" style="max-height: 600px; object-fit: cover;">
+       <!-- 作品 1 -->
+    <div class="gallery-item" data-full="/Lyin.github.io/gallery_img/202610/20261001.png">
+      <!-- 新增了一个 div 用来单独控制它的大小 -->
+      <div style="max-height: 400px; overflow: hidden; display: flex; align-items: center;">
+        <img src="/Lyin.github.io/gallery_img/202610/20261001.png" alt="20261001" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
       <div class="gallery-caption">
         To the allering light<br>
         again and again reaching out...
