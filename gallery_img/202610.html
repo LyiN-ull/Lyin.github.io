@@ -106,11 +106,13 @@
        ============================================================ */
     .lightbox {
       display: none; 
-      position: fixed; 
-      top: 0; left: 0; 
-      width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.95); /* 加深一点背景 */
-      z-index: 99999; /* 把层级拉到最高，盖住所有缝隙 */
+      position: fixed; /* 必须固定定位 */
+      top: 0; 
+      left: 0; 
+      width: 100vw; 
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9); 
+      z-index: 99999; /* 确保在所有元素最上层 */
       justify-content: center;
       align-items: center; 
       cursor: zoom-out;
@@ -278,14 +280,23 @@
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
 
+    // 1. 点击小图，打开大图
     items.forEach(item => {
-      item.addEventListener('click', () => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation(); // 阻止事件冒泡，防止刚打开就被关掉
         lightboxImg.src = item.getAttribute('data-full');
         lightbox.classList.add('active');
       });
     });
 
+    // 2. 点击黑底遮罩层，关闭大图
     lightbox.addEventListener('click', () => {
+      lightbox.classList.remove('active');
+      lightboxImg.src = "";
+    });
+
+    // 3. 点击图片本身，也关闭大图（防止图片太大占满屏幕导致点不到黑底）
+    lightboxImg.addEventListener('click', () => {
       lightbox.classList.remove('active');
       lightboxImg.src = "";
     });
